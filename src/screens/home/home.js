@@ -15,6 +15,7 @@ import ImageComponent from "../../components/imageComponent/imageComponent";
 import SideSwipe from "react-native-sideswipe";
 import { Video } from "expo-av";
 import * as NavigationBar from "expo-navigation-bar";
+import GestureGalery from "../../components/gestureComponents/gesturesGalery";
 
 var pageValue = 42;
 var limitHttp = 42;
@@ -23,13 +24,13 @@ var useNextPage = true;
 export default function GaleryScreen({ navigation }) {
 	const [galeryImages, setgaleryImages] = React.useState([]);
 	const [hightResolutionImages, sethightResolutionImages] = React.useState(false);
-
+	const animationGestureRef = React.useRef();
 	const scrollRef = React.useRef();
 	const tagsData = useSelector((state) => state.galeryImages);
-
+	const [currentPage, setcurrentPage] = React.useState(0);
 	const config = {
-		velocityThreshold: 0.5,
-		directionalOffsetThreshold: 10,
+		velocityThreshold: 1,
+		directionalOffsetThreshold: 50,
 	};
 	function getImages() {
 		if (tagsData.imageTags) {
@@ -41,14 +42,22 @@ export default function GaleryScreen({ navigation }) {
 				setgaleryImages(response.data.data);
 			});
 		}
+		NavigationBar.setVisibilityAsync("hidden");
 	}
 	async function changeImageResolution() {
 		sethightResolutionImages(!hightResolutionImages);
 		setgaleryImages([]);
-		pageValue = 1;
-		limitHttp = 15;
 
-		sumPages = 1;
+		if (hightResolutionImages == false) {
+			pageValue = 1;
+			limitHttp = 15;
+			sumPages = 1;
+		} else {
+			pageValue = 1;
+			limitHttp = 42;
+			sumPages = 1;
+		}
+
 		getImagesGalery(`${tagsData.imageTags}+`, 0, limitHttp).then((response) => {
 			setgaleryImages(response.data.data);
 		});
@@ -58,6 +67,7 @@ export default function GaleryScreen({ navigation }) {
 
 		getImagesGalery(`${tagsData.imageTags}+`, pageValue, limitHttp).then((response) => {
 			setgaleryImages(response.data.data);
+			setcurrentPage(pageValue);
 			scrollRef.current?.scrollToOffset({
 				offset: 0,
 				animated: false,
@@ -65,10 +75,11 @@ export default function GaleryScreen({ navigation }) {
 		});
 	}
 	function previousPage() {
-		if (pageValue !== 1) {
-			pageValue = pageValue - sumPages;
+		if (pageValue !== 0) {
+			pageValue--;
 			getImagesGalery(`${tagsData.imageTags}+`, pageValue, limitHttp).then((response) => {
-				setgaleryImages(response.data);
+				setgaleryImages(response.data.data);
+				setcurrentPage(pageValue);
 				scrollRef.current?.scrollToOffset({
 					offset: 0,
 					animated: false,
@@ -85,8 +96,8 @@ export default function GaleryScreen({ navigation }) {
 	}
 
 	React.useEffect(() => {
-		pageValue = 1;
-		limitHttp = 40;
+		pageValue = 0;
+		limitHttp = 42;
 		sumPages = 1;
 		getImages();
 		NavigationBar.setVisibilityAsync("hidden");
@@ -127,12 +138,12 @@ export default function GaleryScreen({ navigation }) {
 								<View style={{ flexDirection: "row" }}>
 									<View style={{ justifyContent: "center", marginRight: 10 }}>
 										<Image
-											style={{ width: 50, height: 50, opacity: 0.4 }}
+											style={{ width: 30, height: 30, opacity: 0.4 }}
 											source={require("./../../../assets/imgs/icons/headerIcon2.png")}
 										></Image>
 									</View>
 									<View>
-										<Text style={{ fontSize: 25, fontWeight: "bold" }}>One_Piece</Text>
+										<Text style={{ fontSize: 20, fontWeight: "bold" }}>One_Piece</Text>
 										<Text style={{ opacity: 0.3 }}>animated, one_piece, Gang_bang</Text>
 									</View>
 								</View>
@@ -144,7 +155,7 @@ export default function GaleryScreen({ navigation }) {
 								</View>
 							</View>
 							<GestureRecognizer
-								onSwipeLeft={nextPage}
+								onSwipeLeft={() => animationGestureRef.current("right")}
 								onSwipeRight={previousPage}
 								config={config}
 								style={{
@@ -152,10 +163,25 @@ export default function GaleryScreen({ navigation }) {
 								}}
 							>
 								<View
-									style={{ flex: 1, overflow: "hidden", borderRadius: 40, height: 200 }}
+									style={{
+										flex: 1,
+										overflow: "hidden",
+										borderRadius: 20,
+										height: 200,
+									}}
 								>
+									<GestureGalery
+										animationGestureRef={animationGestureRef}
+										changePageNext={() => nextPage()}
+									></GestureGalery>
+
 									<FlatList
-										style={{ flex: 1, borderRadius: 30 }}
+										numColumns={hightResolutionImages == true ? 1 : 3}
+										style={{
+											flex: 1,
+											borderRadius: 30,
+											width: Dimensions.get("window").width - 30,
+										}}
 										ref={scrollRef}
 										data={galeryImages}
 										renderItem={(item, index) => {
@@ -170,34 +196,73 @@ export default function GaleryScreen({ navigation }) {
 														)
 													}
 												>
-													<View
-														style={
-															item.item.media_type == "video"
-																? style.contentImageStyleVideo
-																: style.contentImageStyle
-														}
-													>
-														<ImageComponent
-															item={item}
-															hightResolutionImages={hightResolutionImages}
-															index={index}
-															activateLoading={false}
-														></ImageComponent>
-													</View>
+													{hightResolutionImages == true ? (
+														<View
+															style={
+																item.item.media_type == "video"
+																	? style.contentImageStyleVideo
+																	: style.contentImageStyle
+															}
+														>
+															<ImageComponent
+																item={item}
+																hightResolutionImages={hightResolutionImages}
+																index={index}
+																activateLoading={false}
+															></ImageComponent>
+														</View>
+													) : (
+														<View style={style.contentImageStyleMini}>
+															<Image
+																source={{ uri: item.item.low_res_file.url }}
+																style={{
+																	borderRadius: 10,
+																	width: Dimensions.get("window").width - 276,
+																	height: Dimensions.get("window").width - 276,
+																}}
+															></Image>
+														</View>
+													)}
 												</TouchableOpacity>
 											);
 										}}
 										keyExtractor={(item, index) => `${new Date().getDate()}${index}`}
 										ListFooterComponent={() => (
-											<View>
-												<TouchableOpacity style={style.buttonStyle} onPress={nextPage}>
-													<Text style={style.buttonTextStyle}>Siguiente pagina</Text>
-												</TouchableOpacity>
+											<View
+												style={{
+													flexDirection: "row-reverse",
+													alignItems: "center",
+													justifyContent: "space-between",
+													marginTop: 20,
+													marginBottom: 10,
+												}}
+											>
 												<TouchableOpacity
 													style={style.buttonStyle}
+													onPress={() => animationGestureRef.current("right")}
+												>
+													<Text style={style.buttonTextStyle}>
+														{`Page ${currentPage + 2}`}
+													</Text>
+													<Image
+														style={{ width: 20, height: 20, marginLeft: 15 }}
+														source={require("./../../../assets/imgs/icons/navigateArrows(1).png")}
+													></Image>
+												</TouchableOpacity>
+												<TouchableOpacity
+													style={[
+														style.buttonStyle,
+														{ opacity: currentPage == 0 ? 0 : 1 },
+													]}
 													onPress={previousPage}
 												>
-													<Text style={style.buttonTextStyle}>Anterior pagina</Text>
+													<Image
+														style={{ width: 20, height: 20, marginRight: 15 }}
+														source={require("./../../../assets/imgs/icons/navigateArrows(2).png")}
+													></Image>
+													<Text style={style.buttonTextStyle}>
+														{currentPage > 0 ? `Page ${currentPage}` : ""}
+													</Text>
 												</TouchableOpacity>
 											</View>
 										)}
@@ -252,20 +317,6 @@ export default function GaleryScreen({ navigation }) {
 						</TouchableOpacity>
 					</View>
 				</View>
-				{/* 	<GestureRecognizer
-					onSwipeLeft={nextPage}
-					onSwipeRight={previousPage}
-					config={config}
-					style={{
-						flex: 1,
-					}}
-				>
-					<View style={style.contentAll}>
-						<View style={style.listStyle}>
-							
-						</View>
-					</View>
-				</GestureRecognizer> */}
 			</>
 		);
 	}
@@ -277,14 +328,20 @@ const style = {
 		marginTop: 50,
 	},
 	buttonStyle: {
-		backgroundColor: "white",
+		backgroundColor: "black",
 		padding: 10,
 		marginRight: 10,
-		width: "100%",
 		marginVertical: 5,
+		justifyContent: "center",
+		alignItems: "center",
+		flexDirection: "row",
+		paddingHorizontal: 20,
+		borderRadius: 30,
 	},
 	buttonTextStyle: {
 		textAlign: "center",
+		color: "white",
+		fontSize: 15,
 	},
 	contentImageStyle: {
 		marginVertical: 5,
@@ -295,6 +352,15 @@ const style = {
 		backgroundColor: "black",
 		padding: 5,
 		borderRadius: 35,
+	},
+	contentImageStyleMini: {
+		marginVertical: 2,
+		padding: 2,
+	},
+	contentImageStyleVideoMini: {
+		marginVertical: 5,
+		backgroundColor: "black",
+		borderRadius: 10,
 	},
 	listStyle: {
 		flexDirection: "row",
