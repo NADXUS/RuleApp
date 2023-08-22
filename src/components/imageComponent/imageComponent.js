@@ -19,7 +19,7 @@ export default function ImageComponent({
 							borderRadius: 30,
 						}}
 						key={`${new Date().getDate()}${index}`}
-						width={Dimensions.get("window").width - 30}
+						width={Dimensions.get("window").width - 40}
 						source={{
 							uri:
 								hightResolutionImages == false

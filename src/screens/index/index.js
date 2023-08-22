@@ -8,6 +8,7 @@ import {
 	TouchableOpacity,
 	FlatList,
 	Image,
+	Dimensions
 } from "react-native";
 import React from "react";
 import { useDispatch } from "react-redux";
@@ -196,13 +197,14 @@ const style = StyleSheet.create({
 	}
 	,
 	imageContent: {
-		padding: 30,
 		paddingBottom: 0,
 
 		Image: {
-			width: "100%",
+			width: Dimensions.get("window").width ,
 			height: "100%",
-			borderRadius: 40,
+			borderRadius: 0,
+			borderTopLeftRadius: 0,
+			borderTopRightRadius: 0,
 			resizeMode: "cover",
 		},
 	},
@@ -211,7 +213,6 @@ const style = StyleSheet.create({
 		backgroundColor: "white",
 
 		content1: {
-			paddingTop: 30,
 			backgroundColor: "white",
 		},
 		content2: {

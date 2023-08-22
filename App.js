@@ -9,16 +9,20 @@ import ShowFileImage from "./src/screens/showImageFile/showImageFile";
 import CarrouselScreen from "./src/screens/carrousel/carrousel";
 import * as NavigationBar from "expo-navigation-bar";
 import { useEffect } from "react";
+import { StatusBar } from "expo-status-bar";
 
 const Stack = createNativeStackNavigator();
 export default function App() {
 
 	useEffect(() => {
 		NavigationBar.setBackgroundColorAsync('white');
+
 	}, []);
 
 	return (
 		<Provider store={store}>
+			<StatusBar hidden />
+
 			<NavigationContainer>
 				<Stack.Navigator
 					screenOptions={{

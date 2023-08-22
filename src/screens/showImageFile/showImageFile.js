@@ -70,7 +70,7 @@ export default function ShowFileImage({ fileURL, type, navigation }) {
                   flexDirection: "column",
                   justifyContent: "flex-end",
                   alignItems: "flex-start",
-                  padding: 20,
+                  padding: 10,
                 }}
               >
                 <View style={{ flexDirection: "row" }}>

@@ -118,14 +118,11 @@ export default function GaleryScreen({ navigation }) {
   if (galeryImages[0]) {
     return (
       <>
-        <View style={{ flex: 1, backgroundColor: "black" }}>
+        <View style={{ flex: 1, backgroundColor: "white" }}>
           <View
             style={{
               flex: 1,
               backgroundColor: "white",
-              borderRadius: 30,
-              borderTopLeftRadius: 0,
-              borderTopRightRadius: 0,
             }}
           >
             <SafeAreaView
@@ -135,41 +132,9 @@ export default function GaleryScreen({ navigation }) {
                 width: Dimensions.get("window").width,
                 alignItems: "center",
                 paddingBottom: 20,
-                paddingTop: 50,
+                paddingTop: 20,
               }}
             >
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  paddingHorizontal: 20,
-                  width: Dimensions.get("window").width,
-                  paddingBottom: 20,
-                }}
-              >
-                <View style={{ flexDirection: "row" }}>
-                  <View style={{ justifyContent: "center", marginRight: 10 }}>
-                    <Image
-                      style={{ width: 30, height: 30, opacity: 0.4 }}
-                      source={require("./../../../assets/imgs/icons/headerIcon2.png")}
-                    ></Image>
-                  </View>
-                  <View>
-                    <Text style={{ fontSize: 20, fontWeight: "bold" }}>
-                      One_Piece
-                    </Text>
-                    <Text style={{ opacity: 0.3 }}>
-                      animated, one_piece, Gang_bang
-                    </Text>
-                  </View>
-                </View>
-                <View style={{ justifyContent: "center" }}>
-                  <Image
-                    style={{ width: 30, height: 30, opacity: 0.3 }}
-                    source={require("./../../../assets/imgs/icons/headerIcon1.png")}
-                  ></Image>
-                </View>
-              </View>
               <GestureRecognizer
                 onSwipeLeft={() => animationGestureRef.current("right")}
                 onSwipeRight={previousPage}
@@ -192,7 +157,7 @@ export default function GaleryScreen({ navigation }) {
                   ></GestureGalery>
 
                   <FlatList
-                    numColumns={hightResolutionImages == true ? 1 : 3}
+                    numColumns={hightResolutionImages == true ? 1 : 2}
                     style={{
                       flex: 1,
                       borderRadius: 30,
@@ -233,13 +198,18 @@ export default function GaleryScreen({ navigation }) {
                           ) : (
                             <View style={style.contentImageStyleMini}>
                               <Image
-                                source={{ uri: item.item.low_res_file.url }}
+                                source={{
+                                  uri:
+                                    hightResolutionImages == true
+                                      ? item.item.low_res_file.url
+                                      : item.item.preview_file.url,
+                                }}
                                 style={{
                                   borderRadius: 10,
                                   width:
-                                    Dimensions.get("window").width / 3 - 15,
+                                    Dimensions.get("window").width / 2 - 25,
                                   height:
-                                    Dimensions.get("window").width / 3 - 15,
+                                    Dimensions.get("window").width / 2 - 25,
                                 }}
                               ></Image>
                             </View>
@@ -253,13 +223,49 @@ export default function GaleryScreen({ navigation }) {
                     ListFooterComponent={() => (
                       <View
                         style={{
-                          flexDirection: "row-reverse",
+                          flexDirection: "row",
                           alignItems: "center",
-                          justifyContent: "space-between",
+                          justifyContent: "center",
                           marginTop: 20,
                           marginBottom: 10,
+                          width: Dimensions.get("window").width,
                         }}
                       >
+                        {currentPage == 0 ? (
+                          <TouchableOpacity
+                            style={[style.buttonStyle, { opacity: 0.1 }]}
+                            onPress={previousPage}
+                          >
+                            <Image
+                              style={{
+                                width: 12,
+                                height: 12,
+                                marginRight: 15,
+                                opacity: 0,
+                              }}
+                              source={require("./../../../assets/imgs/icons/navigateArrows(2).png")}
+                            ></Image>
+                            <Text
+                              style={[style.buttonTextStyle, { opacity: 0 }]}
+                            >
+                              {`Page 2`}
+                            </Text>
+                          </TouchableOpacity>
+                        ) : (
+                          <TouchableOpacity
+                            style={[style.buttonStyle]}
+                            onPress={previousPage}
+                          >
+                            <Image
+                              style={{ width: 12, height: 12, marginRight: 15 }}
+                              source={require("./../../../assets/imgs/icons/navigateArrows(2).png")}
+                            ></Image>
+                            <Text style={style.buttonTextStyle}>
+                              {currentPage > 0 ? `Page ${currentPage}` : ""}
+                            </Text>
+                          </TouchableOpacity>
+                        )}
+
                         <TouchableOpacity
                           style={style.buttonStyle}
                           onPress={() => animationGestureRef.current("right")}
@@ -268,24 +274,9 @@ export default function GaleryScreen({ navigation }) {
                             {`Page ${currentPage + 2}`}
                           </Text>
                           <Image
-                            style={{ width: 20, height: 20, marginLeft: 15 }}
+                            style={{ width: 12, height: 12, marginLeft: 15 }}
                             source={require("./../../../assets/imgs/icons/navigateArrows(1).png")}
                           ></Image>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                          style={[
-                            style.buttonStyle,
-                            { opacity: currentPage == 0 ? 0 : 1 },
-                          ]}
-                          onPress={previousPage}
-                        >
-                          <Image
-                            style={{ width: 20, height: 20, marginRight: 15 }}
-                            source={require("./../../../assets/imgs/icons/navigateArrows(2).png")}
-                          ></Image>
-                          <Text style={style.buttonTextStyle}>
-                            {currentPage > 0 ? `Page ${currentPage}` : ""}
-                          </Text>
                         </TouchableOpacity>
                       </View>
                     )}
@@ -302,6 +293,9 @@ export default function GaleryScreen({ navigation }) {
               justifyContent: "center",
               alignItems: "center",
               paddingHorizontal: 50,
+              borderBottomLeftRadius: 0,
+              borderBottomRightRadius: 0,
+              borderRadius: 0,
             }}
           >
             <TouchableOpacity
@@ -353,13 +347,13 @@ const style = {
   buttonStyle: {
     backgroundColor: "black",
     padding: 10,
-    marginRight: 10,
+    marginRight: 25,
     marginVertical: 5,
     justifyContent: "center",
     alignItems: "center",
     flexDirection: "row",
     paddingHorizontal: 20,
-    borderRadius: 30,
+    borderRadius: 10,
   },
   buttonTextStyle: {
     textAlign: "center",
@@ -378,7 +372,7 @@ const style = {
   },
   contentImageStyleMini: {
     marginVertical: 2,
-    padding: 2,
+    padding: 6,
   },
   contentImageStyleVideoMini: {
     marginVertical: 5,

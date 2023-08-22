@@ -21,7 +21,12 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "permissions": [
+        "android.permission.RECORD_AUDIO",
+        "android.permission.MODIFY_AUDIO_SETTINGS"
+      ],
+      "package": "com.nadxus.RuleApp"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -33,6 +38,12 @@
           "microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone."
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "0a4fae56-53dd-4366-a6d2-ce3a51e978a0"
+      }
+    },
+    "owner": "nadxus"
   }
 }
