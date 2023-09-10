@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>RuleApp - Galery</title>
+		<script src="https://cdn.tailwindcss.com"></script>
+		<script src="https://unpkg.com/feather-icons"></script>
+	</head>
+	<body>
+		<div>
+			<div
+				style="height: 65px; margin-top: -80px"
+				class="justify-center flex-row items-center shadow-xl rounded-full top-full flex w-[calc(100%-2.5rem)] fixed bg-white mx-5"
+			>
+				<a href="./../index.html">
+					<i
+						stroke-width="1"
+						data-feather="arrow-left"
+						style="width: 30px; height: 30px; opacity: 0.4"
+						class="mx-4"
+					></i>
+				</a>
+				<i
+					stroke-width="1"
+					data-feather="search"
+					style="width: 30px; height: 30px; opacity: 0.4"
+					class="mx-4"
+				></i>
+				<i
+					stroke-width="1"
+					data-feather="home"
+					style="width: 30px; height: 30px; opacity: 1"
+					class="mx-4"
+				></i>
+				<i
+					stroke-width="1"
+					data-feather="image"
+					style="width: 30px; height: 30px; opacity: 0.4"
+					class="mx-4"
+				></i>
+				<i
+					stroke-width="1"
+					data-feather="columns"
+					style="width: 30px; height: 30px; opacity: 0.4"
+					class="mx-4"
+				></i>
+			</div>
+			<div
+				id="tagsSelected"
+				class="flex list-none flex-row p-5 pl-2 pb-0 overflow-x-scroll overflow-hidden"
+			></div>
+			<div class="flex flex-row p-1 width-full flex-wrap pt-5">
+				<div class="w-[calc(50%-8px)] mx-1" id="galeryCol1"></div>
+				<div class="w-[calc(50%-8px)] mx-1" id="galeryCol2"></div>
+			</div>
+			<div class="flex flex-row p-1 w-full mt-10" style="margin-bottom: 150px">
+				<div class="h-10 flex items-center justify-center">
+					<i
+						stroke-width="1"
+						data-feather="chevron-left"
+						style="width: 30px; height: 30px; opacity: 1"
+						class="mx-4"
+					></i>
+				</div>
+				<div
+					class="flex flex-row items-center w-full justify-center items-center"
+				>
+					<div
+						class="mx-1 bg-black rounded-full text-white flex h-10 w-10 items-center justify-center"
+					>
+						<span>1</span>
+					</div>
+					<div
+						class="mx-1 bg-gray-100 rounded-full text-gray-500 flex h-10 w-10 items-center justify-center"
+					>
+						<span>2</span>
+					</div>
+					<div
+						class="mx-1 bg-gray-100 rounded-full text-gray-500 flex h-10 w-10 items-center justify-center"
+					>
+						<span>3</span>
+					</div>
+					<div
+						class="mx-1 bg-gray-100 rounded-full text-gray-500 flex h-10 w-10 items-center justify-center"
+					>
+						<span>4</span>
+					</div>
+					<div
+						class="mx-1 bg-gray-100 rounded-full text-gray-500 flex h-10 w-10 items-center justify-center"
+					>
+						<span>...</span>
+					</div>
+				</div>
+				<div class="h-10 flex items-center justify-center">
+					<i
+						stroke-width="1"
+						data-feather="chevron-right"
+						style="width: 30px; height: 30px; opacity: 1"
+						class="mx-4"
+					></i>
+				</div>
+			</div>
+		</div>
+
+		<script>
+			window.onload = function () {
+				feather.replace();
+
+				const iamgeGalery = [
+					{
+						id: 1,
+						img: "https://www.egames.news/__export/1692466194146/sites/debate/img/2023/08/19/ia-one-piece-nami-zou.jpg_1902800913.jpg",
+					},
+					{
+						id: 2,
+						img: "https://www.xtrafondos.com/wallpapers/resized/nami-one-piece-red-10687.jpg?s=large",
+					},
+					{
+						id: 3,
+						img: "https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/1dd3fd2f-b45d-447a-34b0-80419528db00/width=450/187075.jpeg",
+					},
+					{
+						id: 3,
+						img: "https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/1dd3fd2f-b45d-447a-34b0-80419528db00/width=450/187075.jpeg",
+					},
+					{
+						id: 3,
+						img: "https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/1dd3fd2f-b45d-447a-34b0-80419528db00/width=450/187075.jpeg",
+					},
+					{
+						id: 1,
+						img: "https://www.egames.news/__export/1692466194146/sites/debate/img/2023/08/19/ia-one-piece-nami-zou.jpg_1902800913.jpg",
+					},
+					{
+						id: 3,
+						img: "https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/1dd3fd2f-b45d-447a-34b0-80419528db00/width=450/187075.jpeg",
+					},
+					{
+						id: 3,
+						img: "https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/1dd3fd2f-b45d-447a-34b0-80419528db00/width=450/187075.jpeg",
+					},
+				];
+
+				const tagsSelected = [
+					{ id: 1, name: "one_piece" },
+					{ id: 2, name: "animated" },
+					{ id: 2, name: "luffy" },
+					{ id: 2, name: "luffy_nami" },
+					{ id: 2, name: "animated" },
+				];
+
+				let imageCol1 = [];
+				let imageCol2 = [];
+				let imageCol1HTML = "";
+				let imageCol2HTML = "";
+
+				for (let i = 0; i < iamgeGalery.length; i++) {
+					if (i % 2 == 0) {
+						imageCol1.push(iamgeGalery[i]);
+					} else {
+						imageCol2.push(iamgeGalery[i]);
+					}
+				}
+
+				for (let i = 0; i < imageCol1.length; i++) {
+					if (i == imageCol1.length - 1) {
+						imageCol1HTML += `<img src="${imageCol1[i].img}" class="mb-2 rounded-lg w-full object-cover" style="height: 200px" />`;
+					} else
+						imageCol1HTML += `<img src="${imageCol1[i].img}" class="mb-2 rounded-lg max-h-100 w-full object-cover" />`;
+				}
+				for (let i = 0; i < imageCol2.length; i++) {
+					if (i == imageCol2.length - 1) {
+						imageCol2HTML += `<img src="${imageCol2[i].img}" class="mb-2 rounded-lg w-full object-cover" style="height: 370px" />`;
+					} else
+						imageCol2HTML += `<img src="${imageCol2[i].img}" class="mb-2 rounded-lg max-h-100 w-full object-cover" />`;
+				}
+
+				document.getElementById("galeryCol1").innerHTML = imageCol1HTML;
+				document.getElementById("galeryCol2").innerHTML = imageCol2HTML;
+
+				let tagsHTML = "";
+
+				tagsSelected.forEach((tag, index) => {
+					if (index == 0) {
+						tagsHTML += `<li class="py-2 font-sans font-semibold text-white flex items-center mx-1 text-sm list-none bg-black text-white p-1 px-4 rounded-full">${tag.name}</li>`;
+					} else
+						tagsHTML += `<li class="py-2 font-sans font-semibold text-stone-400 flex items-center mx-1 text-sm list-none bg-gray-100 text-black p-1 px-4 rounded-full">${tag.name}</li>`;
+				});
+				document.getElementById("tagsSelected").innerHTML = tagsHTML;
+			};
+		</script>
+	</body>
+</html>
