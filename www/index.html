@@ -10,10 +10,7 @@
 	<body class="flex bg-white h-screen w-screen overflow-hidden">
 		<div class="flex-1 overflow-hidden">
 			<div class="h-1/2 bg-blue-500 w-screen">
-				<img
-					class="w-full h-full object-cover"
-					src="./../assets/images/index/0AD 1.png"
-				/>
+				<img class="w-full h-full object-cover" src="./img/0AD 1.png" />
 			</div>
 			<div class="h-1/2 bg-white w-screen">
 				<div class="flex flex-col w-screen p-10">
@@ -37,7 +34,6 @@
 						class="w-full mb-2 p-3 rounded-full border-2 border-2 border-black"
 						placeholder="Search tags..."
 						type="text"
-						onkeypress="searchTags(this)"
 						id="searchTagsInput"
 					/>
 					<div
@@ -62,7 +58,7 @@
 					</div>
 
 					<button
-						onclick="goToGalery()"
+						id="buttomGoToGalery"
 						class="hover:opacity-40 bg-black text-white p-3 w-full rounded-full"
 					>
 						Continue
@@ -71,9 +67,20 @@
 			</div>
 		</div>
 	</body>
+	<script
+		type="text/javascript"
+		src="https://code.jquery.com/jquery-1.12.3.js"
+	></script>
 
 	<script>
-		const BACKEND_URL = "http://localhost:3000";
+		$("#buttomGoToGalery").click(function (event) {
+			goToGalery();
+		});
+		$("#searchTagsInput").on("input", function () {
+			searchTags($(this).val());
+		});
+
+		const BACKEND_URL = "https://ruleappserver-10d4170b9aef.herokuapp.com";
 		const tagsSelected = [];
 		const tagsSearched = [];
 
@@ -87,7 +94,7 @@
 			tagsSelected.splice(index, 1);
 			document.getElementById("tagsSelected").innerHTML = tagsSelected.map(
 				(tag, index) => {
-					return `<li  tyle="white-space: nowrap"  class="h-9 hover:opacity-40 mx-1 items-center justify-center flex font-bold list-none bg-black text-white p-1 px-4 rounded-full"><span class="ml-2">${tag}</span><img class="w-4 h-4 ml-1" onclick="deleteTagsSelected(${index})" src="./../assets/images/index/close.svg"/></li>`;
+					return `<li  tyle="white-space: nowrap"  class="h-9 hover:opacity-40 mx-1 items-center justify-center flex font-bold list-none bg-black text-white p-1 px-4 rounded-full"><span class="ml-2">${tag}</span><img class="w-4 h-4 ml-1" onclick="deleteTagsSelected(${index})" src="./img/close.svg"/></li>`;
 				}
 			);
 		}
@@ -96,7 +103,7 @@
 			tagsSelected.push(tags);
 			document.getElementById("tagsSelected").innerHTML = tagsSelected.map(
 				(tag, index) => {
-					return `<li onclick="deleteTagsSelected(${index})" tyle="white-space: nowrap"  class="h-9 hover:opacity-40 mx-1 items-center justify-center flex font-bold list-none bg-black text-white p-1 px-4 rounded-full"><span class="ml-2">${tag}</span><img class="w-4 h-4 ml-1" src="./../assets/images/index/close.svg"/></li>`;
+					return `<li onclick="deleteTagsSelected(${index})" tyle="white-space: nowrap"  class="h-9 hover:opacity-40 mx-1 items-center justify-center flex font-bold list-none bg-black text-white p-1 px-4 rounded-full"><span class="ml-2">${tag}</span><img class="w-4 h-4 ml-1" src="./img/close.svg"/></li>`;
 				}
 			);
 
@@ -107,16 +114,16 @@
 
 		function showSelectedTags(tags) {
 			document.getElementById("tagsSearched").innerHTML = tags.map((tag) => {
-				return `<li onclick="addTags('${tag.name}')" style="white-space: nowrap" class="hover:opacity-40 flex items-center w-auto mx-1 max-h-9 list-none bg-white border-2 border-black text-black p-1 px-5 rounded-full" > ${tag.name} <img class="w-3 h-3 ml-2" src="./../assets/images/index/Arrow 1.png"/> </li>`;
+				return `<li onclick="addTags('${tag.name}')" style="white-space: nowrap" class="hover:opacity-40 flex items-center w-auto mx-1 max-h-9 list-none bg-white border-2 border-black text-black p-1 px-5 rounded-full" > ${tag.name} <img class="w-3 h-3 ml-2" src="./img/arrow1.png"/> </li>`;
 			});
 		}
 
 		async function searchTags(el) {
-			const textoConGuiones = el.value.replaceAll(/ /g, "_");
-			document.getElementById("searchTagsInput").value = textoConGuiones;
+			const textoConGuiones = el.replaceAll(/ /g, "_");
+			$("#searchTagsInput").val(textoConGuiones);
 
 			let reqOptions = {
-				url: `${BACKEND_URL}/rule/tags/${el.value}`,
+				url: `${BACKEND_URL}/rule/tags/${el}`,
 				method: "GET",
 			};
 
@@ -130,7 +137,7 @@
 
 		function goToGalery() {
 			window.localStorage.setItem("tagsSelected", JSON.stringify(tagsSelected));
-			window.location.href = "./galery/galery.html";
+			window.location.href = "./galery.html";
 		}
 	</script>
 </html>

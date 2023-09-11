@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>RuleApp - Galery</title>
+		<script src="https://cdn.tailwindcss.com"></script>
+		<script src="https://unpkg.com/feather-icons"></script>
+		<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+	</head>
+	<body>
+		<div id="galeryContainer">
+			<div
+				style="height: 65px; margin-top: -80px"
+				class="justify-center flex-row items-center shadow-xl rounded-full top-full flex w-[calc(100%-2.5rem)] fixed bg-white mx-5"
+			>
+				<a href="./index.html">
+					<i
+						stroke-width="1"
+						data-feather="arrow-left"
+						style="width: 30px; height: 30px; opacity: 0.4"
+						class="mx-4"
+					></i>
+				</a>
+				<i
+					stroke-width="1"
+					data-feather="search"
+					style="width: 30px; height: 30px; opacity: 0.4"
+					class="mx-4"
+				></i>
+				<i
+					stroke-width="1"
+					data-feather="home"
+					style="width: 30px; height: 30px; opacity: 1"
+					class="mx-4"
+				></i>
+				<i
+					onclick="changeImagesSize()"
+					stroke-width="1"
+					data-feather="image"
+					style="width: 30px; height: 30px; opacity: 0.4"
+					class="mx-4"
+				></i>
+				<i
+					stroke-width="1"
+					data-feather="columns"
+					style="width: 30px; height: 30px; opacity: 0.4"
+					class="mx-4"
+				></i>
+			</div>
+			<div
+				id="tagsSelected"
+				class="flex list-none flex-row p-5 pl-2 pb-0 overflow-x-scroll overflow-hidden"
+			></div>
+			<div class="flex flex-row p-1 width-full flex-wrap pt-5">
+				<div class="w-[calc(50%-8px)] mx-1" id="galeryCol1"></div>
+				<div class="w-[calc(50%-8px)] mx-1" id="galeryCol2"></div>
+			</div>
+			<div
+				id="bigImagesGalery"
+				class="flex flex-row p-1 width-full flex-wrap pt-5 -mt-5"
+			></div>
+			<div
+				class="flex flex-row p-1 w-full mt-10 justify-center"
+				style="margin-bottom: 150px"
+			>
+				<div class="h-10 flex items-center justify-center">
+					<i
+						onclick="previousPage()"
+						stroke-width="1"
+						data-feather="chevron-left"
+						style="width: 30px; height: 30px; opacity: 1"
+						class="mx-4"
+					></i>
+				</div>
+				<div
+					class="flex flex-row items-center w-100 justify-center items-center"
+				>
+					<div
+						id="pageNumber"
+						class="mx-1 bg-black rounded-full text-white flex h-10 items-center px-4 justify-center"
+					>
+						<span>Page 1</span>
+					</div>
+				</div>
+				<div class="h-10 flex items-center justify-center">
+					<i
+						onclick="nextPage()"
+						stroke-width="1"
+						data-feather="chevron-right"
+						style="width: 30px; height: 30px; opacity: 1"
+						class="mx-4"
+					></i>
+				</div>
+			</div>
+		</div>
+
+		<script src="./js/galery.js"></script>
+	</body>
+</html>
