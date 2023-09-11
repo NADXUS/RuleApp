@@ -94,7 +94,7 @@
 			tagsSelected.splice(index, 1);
 			document.getElementById("tagsSelected").innerHTML = tagsSelected.map(
 				(tag, index) => {
-					return `<li  tyle="white-space: nowrap"  class="h-9 hover:opacity-40 mx-1 items-center justify-center flex font-bold list-none bg-black text-white p-1 px-4 rounded-full"><span class="ml-2">${tag}</span><img class="w-4 h-4 ml-1" onclick="deleteTagsSelected(${index})" src="./img/close.svg"/></li>`;
+					return `<li style="white-space: nowrap"  class="h-9 hover:opacity-40 mx-1 items-center justify-center flex font-bold list-none bg-black text-white p-1 px-4 rounded-full"><span class="ml-2">${tag}</span><img class="w-4 h-4 ml-1" onclick="deleteTagsSelected(${index})" src="./img/close.svg"/></li>`;
 				}
 			);
 		}
@@ -103,7 +103,7 @@
 			tagsSelected.push(tags);
 			document.getElementById("tagsSelected").innerHTML = tagsSelected.map(
 				(tag, index) => {
-					return `<li onclick="deleteTagsSelected(${index})" tyle="white-space: nowrap"  class="h-9 hover:opacity-40 mx-1 items-center justify-center flex font-bold list-none bg-black text-white p-1 px-4 rounded-full"><span class="ml-2">${tag}</span><img class="w-4 h-4 ml-1" src="./img/close.svg"/></li>`;
+					return `<li onclick="deleteTagsSelected(${index})" style="white-space: nowrap"  class="h-9 hover:opacity-40 mx-1 items-center justify-center flex font-bold list-none bg-black text-white p-1 px-4 rounded-full"><span class="ml-2">${tag}</span><img class="w-4 h-4 ml-1" src="./img/close.svg"/></li>`;
 				}
 			);
 
@@ -139,5 +139,10 @@
 			window.localStorage.setItem("tagsSelected", JSON.stringify(tagsSelected));
 			window.location.href = "./galery.html";
 		}
+
+		function removeCurrentPage() {
+			window.localStorage.removeItem("currentPage");
+		}
+		removeCurrentPage();
 	</script>
 </html>

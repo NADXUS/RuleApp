@@ -11,4 +11,5 @@
     <allow-intent href="https://*/*" />
     <preference name="hostname" value="localhost" />
     <preference name="AndroidInsecureFileModeEnabled" value="true" />
+    <preference name="StatusBarStyle" value="lightcontent" />
 </widget>
