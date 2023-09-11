@@ -6,9 +6,10 @@
 		<title>RuleApp - Galery</title>
 		<script src="https://cdn.tailwindcss.com"></script>
 		<script src="https://unpkg.com/feather-icons"></script>
+		<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 	</head>
 	<body>
-		<div>
+		<div id="galeryContainer">
 			<div
 				style="height: 65px; margin-top: -80px"
 				class="justify-center flex-row items-center shadow-xl rounded-full top-full flex w-[calc(100%-2.5rem)] fixed bg-white mx-5"
@@ -34,6 +35,7 @@
 					class="mx-4"
 				></i>
 				<i
+					onclick="changeImagesSize()"
 					stroke-width="1"
 					data-feather="image"
 					style="width: 30px; height: 30px; opacity: 0.4"
@@ -54,9 +56,17 @@
 				<div class="w-[calc(50%-8px)] mx-1" id="galeryCol1"></div>
 				<div class="w-[calc(50%-8px)] mx-1" id="galeryCol2"></div>
 			</div>
-			<div class="flex flex-row p-1 w-full mt-10" style="margin-bottom: 150px">
+			<div
+				id="bigImagesGalery"
+				class="flex flex-row p-1 width-full flex-wrap pt-5 -mt-5"
+			></div>
+			<div
+				class="flex flex-row p-1 w-full mt-10 justify-center"
+				style="margin-bottom: 150px"
+			>
 				<div class="h-10 flex items-center justify-center">
 					<i
+						onclick="previousPage()"
 						stroke-width="1"
 						data-feather="chevron-left"
 						style="width: 30px; height: 30px; opacity: 1"
@@ -64,36 +74,18 @@
 					></i>
 				</div>
 				<div
-					class="flex flex-row items-center w-full justify-center items-center"
+					class="flex flex-row items-center w-100 justify-center items-center"
 				>
 					<div
-						class="mx-1 bg-black rounded-full text-white flex h-10 w-10 items-center justify-center"
+						id="pageNumber"
+						class="mx-1 bg-black rounded-full text-white flex h-10 items-center px-4 justify-center"
 					>
-						<span>1</span>
-					</div>
-					<div
-						class="mx-1 bg-gray-100 rounded-full text-gray-500 flex h-10 w-10 items-center justify-center"
-					>
-						<span>2</span>
-					</div>
-					<div
-						class="mx-1 bg-gray-100 rounded-full text-gray-500 flex h-10 w-10 items-center justify-center"
-					>
-						<span>3</span>
-					</div>
-					<div
-						class="mx-1 bg-gray-100 rounded-full text-gray-500 flex h-10 w-10 items-center justify-center"
-					>
-						<span>4</span>
-					</div>
-					<div
-						class="mx-1 bg-gray-100 rounded-full text-gray-500 flex h-10 w-10 items-center justify-center"
-					>
-						<span>...</span>
+						<span>Page 1</span>
 					</div>
 				</div>
 				<div class="h-10 flex items-center justify-center">
 					<i
+						onclick="nextPage()"
 						stroke-width="1"
 						data-feather="chevron-right"
 						style="width: 30px; height: 30px; opacity: 1"
@@ -104,91 +96,142 @@
 		</div>
 
 		<script>
-			window.onload = function () {
-				feather.replace();
+			let pageID = 0;
+			let smallImages = true;
 
-				const iamgeGalery = [
-					{
-						id: 1,
-						img: "https://www.egames.news/__export/1692466194146/sites/debate/img/2023/08/19/ia-one-piece-nami-zou.jpg_1902800913.jpg",
-					},
-					{
-						id: 2,
-						img: "https://www.xtrafondos.com/wallpapers/resized/nami-one-piece-red-10687.jpg?s=large",
-					},
-					{
-						id: 3,
-						img: "https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/1dd3fd2f-b45d-447a-34b0-80419528db00/width=450/187075.jpeg",
-					},
-					{
-						id: 3,
-						img: "https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/1dd3fd2f-b45d-447a-34b0-80419528db00/width=450/187075.jpeg",
-					},
-					{
-						id: 3,
-						img: "https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/1dd3fd2f-b45d-447a-34b0-80419528db00/width=450/187075.jpeg",
-					},
-					{
-						id: 1,
-						img: "https://www.egames.news/__export/1692466194146/sites/debate/img/2023/08/19/ia-one-piece-nami-zou.jpg_1902800913.jpg",
-					},
-					{
-						id: 3,
-						img: "https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/1dd3fd2f-b45d-447a-34b0-80419528db00/width=450/187075.jpeg",
-					},
-					{
-						id: 3,
-						img: "https://image.civitai.com/xG1nkqKTMzGDvpLrqFT7WA/1dd3fd2f-b45d-447a-34b0-80419528db00/width=450/187075.jpeg",
-					},
-				];
+			feather.replace();
 
-				const tagsSelected = [
-					{ id: 1, name: "one_piece" },
-					{ id: 2, name: "animated" },
-					{ id: 2, name: "luffy" },
-					{ id: 2, name: "luffy_nami" },
-					{ id: 2, name: "animated" },
-				];
+			let iamgeGalery = [];
 
-				let imageCol1 = [];
-				let imageCol2 = [];
-				let imageCol1HTML = "";
-				let imageCol2HTML = "";
+			let tagsSelected = [
+				{ id: 1, name: "one_piece" },
+				{ id: 2, name: "animated" },
+				{ id: 2, name: "luffy" },
+				{ id: 2, name: "luffy_nami" },
+				{ id: 2, name: "animated" },
+			];
 
-				for (let i = 0; i < iamgeGalery.length; i++) {
-					if (i % 2 == 0) {
-						imageCol1.push(iamgeGalery[i]);
-					} else {
-						imageCol2.push(iamgeGalery[i]);
-					}
-				}
+			let imageCol1 = [];
+			let imageCol2 = [];
+			let imageCol1HTML = "";
+			let imageCol2HTML = "";
 
-				for (let i = 0; i < imageCol1.length; i++) {
-					if (i == imageCol1.length - 1) {
-						imageCol1HTML += `<img src="${imageCol1[i].img}" class="mb-2 rounded-lg w-full object-cover" style="height: 200px" />`;
-					} else
-						imageCol1HTML += `<img src="${imageCol1[i].img}" class="mb-2 rounded-lg max-h-100 w-full object-cover" />`;
-				}
-				for (let i = 0; i < imageCol2.length; i++) {
-					if (i == imageCol2.length - 1) {
-						imageCol2HTML += `<img src="${imageCol2[i].img}" class="mb-2 rounded-lg w-full object-cover" style="height: 370px" />`;
-					} else
-						imageCol2HTML += `<img src="${imageCol2[i].img}" class="mb-2 rounded-lg max-h-100 w-full object-cover" />`;
-				}
+			function scrollToTop(element) {
+				element.scrollIntoView({ behavior: "smooth", block: "start" });
+			}
 
-				document.getElementById("galeryCol1").innerHTML = imageCol1HTML;
-				document.getElementById("galeryCol2").innerHTML = imageCol2HTML;
-
+			function printTagsSelected() {
 				let tagsHTML = "";
 
 				tagsSelected.forEach((tag, index) => {
 					if (index == 0) {
-						tagsHTML += `<li class="py-2 font-sans font-semibold text-white flex items-center mx-1 text-sm list-none bg-black text-white p-1 px-4 rounded-full">${tag.name}</li>`;
+						tagsHTML += `<li class="py-2 font-sans font-semibold text-white flex items-center mx-1 text-sm list-none bg-black text-white p-1 px-4 rounded-full">${tag}</li>`;
 					} else
-						tagsHTML += `<li class="py-2 font-sans font-semibold text-stone-400 flex items-center mx-1 text-sm list-none bg-gray-100 text-black p-1 px-4 rounded-full">${tag.name}</li>`;
+						tagsHTML += `<li class="py-2 font-sans font-semibold text-stone-400 flex items-center mx-1 text-sm list-none bg-gray-100 text-black p-1 px-4 rounded-full">${tag}</li>`;
 				});
 				document.getElementById("tagsSelected").innerHTML = tagsHTML;
-			};
+			}
+			function printimages() {
+				document.getElementById("pageNumber").innerHTML = `<span>Page ${
+					pageID + 1
+				}</span>`;
+
+				if (smallImages) {
+					for (let i = 0; i < iamgeGalery.length; i++) {
+						if (i % 2 == 0) {
+							imageCol1.push(iamgeGalery[i]);
+						} else {
+							imageCol2.push(iamgeGalery[i]);
+						}
+					}
+
+					for (let i = 0; i < imageCol1.length; i++) {
+						if (i == imageCol1.length - 1) {
+							imageCol1HTML += `<img src="${imageCol1[i].preview_file.url}" class="mb-2 rounded-lg w-full object-cover" style="height: 200px" />`;
+						} else
+							imageCol1HTML += `<img src="${imageCol1[i].preview_file.url}" class="mb-2 rounded-lg max-h-100 w-full object-cover" />`;
+					}
+					for (let i = 0; i < imageCol2.length; i++) {
+						if (i == imageCol2.length - 1) {
+							imageCol2HTML += `<img src="${imageCol2[i].preview_file.url}" class="mb-2 rounded-lg w-full object-cover" style="height: 370px" />`;
+						} else
+							imageCol2HTML += `<img src="${imageCol2[i].preview_file.url}" class="mb-2 rounded-lg max-h-100 w-full object-cover" />`;
+					}
+
+					document.getElementById("galeryCol1").innerHTML = imageCol1HTML;
+					document.getElementById("galeryCol2").innerHTML = imageCol2HTML;
+					document.getElementById("bigImagesGalery").innerHTML = "";
+				} else {
+					let bigImagesHTML = "";
+					document.getElementById("galeryCol1").innerHTML = "";
+					document.getElementById("galeryCol2").innerHTML = "";
+					for (let i = 0; i < iamgeGalery.length; i++) {
+						bigImagesHTML += `<img src="${iamgeGalery[i].low_res_file.url}" class="mb-2 rounded-lg w-full object-cover" style="max-height: 1000px" />`;
+					}
+					document.getElementById("bigImagesGalery").innerHTML = bigImagesHTML;
+				}
+			}
+
+			const BACKEND_URL = "http://localhost:3000";
+			async function getGaleyImages() {
+				tagsSelected = await JSON.parse(
+					await window.localStorage.getItem("tagsSelected")
+				);
+				printTagsSelected();
+				let tagsUser = await JSON.parse(
+					await window.localStorage.getItem("tagsSelected")
+				).join("%7C");
+
+				let reqOptions = {
+					url: `${BACKEND_URL}/rule/galery/${tagsUser}/${pageID}`,
+					method: "GET",
+				};
+
+				let response = await axios.request(reqOptions);
+
+				if (!response.data.null) {
+					iamgeGalery = response.data;
+					console.log(response.data);
+					printimages();
+				} else {
+					console.log("no se ha encontrado nada");
+				}
+			}
+
+			getGaleyImages();
+			function nextPage() {
+				iamgeGalery = [];
+				imageCol1 = [];
+				imageCol2 = [];
+				imageCol1HTML = "";
+				imageCol2HTML = "";
+				pageID++;
+
+				getGaleyImages();
+				scrollToTop(document.getElementById("galeryContainer"));
+			}
+
+			function previousPage() {
+				iamgeGalery = [];
+				imageCol1 = [];
+				imageCol2 = [];
+				imageCol1HTML = "";
+				imageCol2HTML = "";
+
+				if (pageID !== 0) {
+					pageID--;
+
+					getGaleyImages();
+					scrollToTop(document.getElementById("galeryContainer"));
+				}
+			}
+
+			function changeImagesSize() {
+				console.log("changeImagesSize");
+				smallImages = !smallImages;
+				printimages();
+				scrollToTop(document.getElementById("galeryContainer"));
+			}
 		</script>
 	</body>
 </html>

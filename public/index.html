@@ -7,7 +7,10 @@
 		<script src="https://cdn.tailwindcss.com"></script>
 		<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 	</head>
-	<body class="flex bg-white h-screen w-screen overflow-hidden">
+	<body
+		class="flex bg-white h-screen w-screen overflow-hidden"
+		onload="getGaleyImages()"
+	>
 		<div class="flex-1 overflow-hidden">
 			<div class="h-1/2 bg-blue-500 w-screen">
 				<img
@@ -47,76 +50,31 @@
 				</div>
 			</div>
 		</div>
+		<script>
+			const BACKEND_URL = "http://localhost:3000";
+
+			const tagsSelected = [
+				{ id: 1, name: "tag1" },
+				{ id: 2, name: "tag2" },
+			];
+			const tagsSearched = [
+				{ id: 1, name: "tag1" },
+				{ id: 2, name: "tag2" },
+				{ id: 3, name: "tag3" },
+			];
+
+			/* window.onload = function () {
+				document.getElementById("tagsSelected").innerHTML = tagsSelected.map(
+					(tag) => {
+						return `<li class="hover:opacity-40 mx-1 items-center flex font-bold text-sm list-none bg-black text-white p-1 px-2 rounded-full"><span class="ml-2">${tag.name}</span><img class="w-4 h-4 ml-1" src="./../assets/images/index/close.svg"/></li>`;
+					}
+				);
+				document.getElementById("tagsSearched").innerHTML = tagsSearched.map(
+					(tag) => {
+						return `<li class="hover:opacity-40 flex items-center mx-1 text-sm list-none bg-white border-2 border-black text-black p-1 px-2 rounded-full" > ${tag.name} <img class="w-3 h-3 ml-2" src="./../assets/images/index/Arrow 1.png"/> </li>`;
+					}
+				);
+			}; */
+		</script>
 	</body>
-
-	<script>
-		const tagsSelected = [
-			{ id: 1, name: "tag1" },
-			{ id: 2, name: "tag2" },
-		];
-		const tagsSearched = [
-			{ id: 1, name: "tag1" },
-			{ id: 2, name: "tag2" },
-			{ id: 3, name: "tag3" },
-		];
-		window.onload = function () {
-			document.getElementById("tagsSelected").innerHTML = tagsSelected.map(
-				(tag) => {
-					return `<li class="hover:opacity-40 mx-1 items-center flex font-bold text-sm list-none bg-black text-white p-1 px-2 rounded-full"><span class="ml-2">${tag.name}</span><img class="w-4 h-4 ml-1" src="./../assets/images/index/close.svg"/></li>`;
-				}
-			);
-			document.getElementById("tagsSearched").innerHTML = tagsSearched.map(
-				(tag) => {
-					return `<li class="hover:opacity-40 flex items-center mx-1 text-sm list-none bg-white border-2 border-black text-black p-1 px-2 rounded-full" > ${tag.name} <img class="w-3 h-3 ml-2" src="./../assets/images/index/Arrow 1.png"/> </li>`;
-				}
-			);
-		};
-
-		async function searchTags(el) {
-			let headersList = {
-				Accept: "*/*",
-			};
-
-			let reqOptions = {
-				url: "https://api.r34.app/booru/rule34.xxx/tags?baseEndpoint=rule34.xxx&tag=one&order=count&limit=15",
-				method: "GET",
-				headers: headersList,
-			};
-
-			let response = await axios.request(reqOptions);
-			console.log(response.data);
-
-			let data = await response.text();
-			console.log(data);
-		}
-
-		/* const apiURL = "https://api.rule34.xxx/index.php?";
-		const apiURL2 = "https://rule34.xxx"; */
-		/* const apiURL2 = "https://rule34.xxx";
-
-		module.exports = {
-			getImagesGalery(tags, page, limit) {
-				if (tags !== "++") {
-					return api.get(
-						`https://api.r34.app/booru/rule34.xxx/posts?baseEndpoint=rule34.xxx&limit=${limit}&tags=${tags}&pageID=${page}`,
-						{
-							headers: Axiosheaders[0],
-						}
-					);
-				} else {
-					return api.get(
-						`https://api.r34.app/booru/rule34.xxx/posts?baseEndpoint=rule34.xxx&limit=${limit}&pageID=${page}`,
-						{
-							headers: Axiosheaders[0],
-						}
-					);
-				}
-			},
-			getTagsSearch(works) {
-				return api.get(`${apiURL2}/public/autocomplete.php?q=${works}`, {
-					headers: Axiosheaders[0],
-				});
-			},
-		}; */
-	</script>
 </html>
