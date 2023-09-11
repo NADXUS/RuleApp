@@ -8,9 +8,19 @@
 		<script src="https://unpkg.com/feather-icons"></script>
 		<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 	</head>
-	<body>
-		<div id="galeryContainer">
-			<div class="flex flex-row w-screen h-20 p-3 mt-5">
+	<body id="app">
+		<div id="scrollContent" class="-mt-5 mb-12"></div>
+		<div
+			id="searchContainer"
+			class="hidden bg-white p-5 z-5 w-screen h-screen fixed top-0 left-0 flex flex-col justify-center items-center"
+		>
+			<div class="flex flex-col w-screen px-6">
+				<div
+					id="tagsSelectedSearch"
+					class="flex list-none flex-row overflow-x-scroll overflow-hidden"
+				></div>
+			</div>
+			<div class="flex px-6 flex-row w-screen h-20 p-3 mt-2">
 				<div
 					class="flex flex-row items-center w-full mb-2 p-3 rounded-full border-2 border-2 border-black"
 				>
@@ -27,25 +37,42 @@
 						id="searchTagsInput"
 					/>
 				</div>
-				<div>
-					<button
-						onclick="useSearchInWeb()"
-						class="bg-black text-white w-12 h-12 rounded-full ml-4 flex items-center justify-center"
-					>
-						<i
-							stroke-width="2"
-							data-feather="search"
-							style="width: 20px; height: 20px; opacity: 1"
-							class="mx-2 text-white"
-							stroke="white"
-						></i>
-					</button>
-				</div>
 			</div>
 			<div
 				id="tagsSearched"
-				class="flex w-full px-2 pt-0 min-h-10 rounded-full overflow-x-scroll mb-3"
+				class="flex w-full px-2 pl-0 pt-0 min-h-10 rounded-full overflow-x-scroll mb-3"
 			></div>
+			<div class="flex flex-row items-center w-full">
+				<button
+					onclick="closeSearchInWeb()"
+					class="bg-gray-100 text-white mr-1 w-20 h-12 rounded-full flex items-center justify-center"
+				>
+					<i
+						stroke-width="2"
+						data-feather="arrow-left"
+						style="width: 20px; height: 20px; opacity: 1"
+						class="mx-2 text-white"
+						stroke="black"
+					></i>
+				</button>
+				<button
+					onclick="useSearchInWeb()"
+					class="bg-black text-white ml-1 flex-auto w-full min-w-200 h-12 rounded-full flex items-center justify-center"
+				>
+					<span class="text-white">Search</span>
+					<i
+						stroke-width="2"
+						data-feather="search"
+						style="width: 20px; height: 20px; opacity: 1"
+						class="mx-2 text-white"
+						stroke="white"
+					></i>
+				</button>
+			</div>
+		</div>
+		<div id="galeryContainer">
+			<!--  -->
+
 			<div
 				style="height: 65px; margin-top: -80px"
 				class="justify-center flex-row items-center shadow-xl rounded-full top-full flex w-[calc(100%-2.5rem)] fixed bg-white mx-5"
@@ -65,6 +92,7 @@
 					class="mx-4"
 				></i>
 				<i
+					onclick="openSearchInweb()"
 					stroke-width="1"
 					data-feather="search"
 					style="width: 30px; height: 30px; opacity: 0.4"
@@ -87,7 +115,7 @@
 			</div>
 			<div
 				id="tagsSelected"
-				class="flex list-none flex-row p-5 pt-0 pl-2 pb-0 overflow-x-scroll overflow-hidden"
+				class="flex list-none mt-5 flex-row p-5 pt-0 pl-2 pb-0 overflow-x-scroll overflow-hidden"
 			></div>
 			<div class="flex flex-row p-1 width-full flex-wrap pt-5">
 				<div class="w-[calc(50%-8px)] mx-1" id="galeryCol1"></div>
@@ -139,7 +167,6 @@
 			const BACKEND_URL = "https://ruleappserver-10d4170b9aef.herokuapp.com";
 
 			let pageID = 0;
-			let smallImages = true;
 
 			feather.replace();
 
@@ -159,7 +186,7 @@
 			let imageCol2HTML = "";
 
 			$("#searchTagsInput").on("input", function () {
-				searchTags($(this).val());
+				searchTagsInput($(this).val());
 			});
 
 			//hacer scroll hasta el final de las tags
@@ -170,35 +197,39 @@
 
 			async function deleteTagsSelected(index) {
 				tagsSelected.splice(index, 1);
-				document.getElementById("tagsSelected").innerHTML = tagsSelected.map(
-					(tag, index) => {
-						if (index == 0) {
-							return `<li onclick="deleteTagsSelected(${index})" style="white-space: nowrap"  class="h-9 hover:opacity-40 mx-1 items-center justify-center flex font-bold list-none bg-black text-white p-1 px-4 rounded-full"><span class="ml-2">${tag}</span><img class="w-5 h-5 ml-1" src="./img/x(1).svg"/></li>`;
-						} else
-							return `<li onclick="deleteTagsSelected(${index})" style="white-space: nowrap"  class="h-9 hover:opacity-40 mx-1 items-center justify-center flex font-bold list-none bg-gray-100 text-gray-400 p-1 px-4 rounded-full"><span class="ml-2">${tag}</span><img class="w-5 h-5 ml-1" style="opacity: 0.5" src="./img/x.svg"/></li>`;
-					}
-				);
+				document.getElementById("tagsSelectedSearch").innerHTML =
+					tagsSelected.map((tag, index) => {
+						return `<li onclick="deleteTagsSelected(${index})" style="white-space: nowrap"  class="h-9 hover:opacity-40 mx-1 items-center justify-center flex font-bold list-none bg-black text-white p-1 px-4 rounded-full"><span class="ml-2">${tag}</span><img class="w-5 h-5 ml-1" src="./img/x(1).svg"/></li>`;
+					});
 				await window.localStorage.setItem(
 					"tagsSelected",
 					JSON.stringify(tagsSelected)
 				);
 				getGaleyImages();
 			}
+			async function showSelectedTagsOnInit() {
+				tagsSelected = [];
+				tagsSelected = await JSON.parse(
+					window.localStorage.getItem("tagsSelected")
+				);
+				document.getElementById("tagsSelectedSearch").innerHTML =
+					tagsSelected.map((tag, index) => {
+						return `<li onclick="deleteTagsSelected(${index})" style="white-space: nowrap"  class="h-9 hover:opacity-40 mr-2 items-center justify-center flex font-bold list-none bg-black text-white p-1 px-4 rounded-full"><span class="ml-2">${tag}</span><img class="w-5 h-5 ml-1" src="./img/x(1).svg"/></li>`;
+					});
+
+				const scrollableElement = document.getElementById("tagsSelectedSearch");
+				scrollToHorizontalEnd(scrollableElement);
+				document.getElementById("searchTagsInput").value = "";
+			}
 			function addTags(tags) {
 				tagsSelected.push(tags);
-				document.getElementById("tagsSelected").innerHTML = tagsSelected.map(
-					(tag, index) => {
-						if (index == 0) {
-							return `<li onclick="deleteTagsSelected(${index})" style="white-space: nowrap"  class="h-9 hover:opacity-40 mx-1 items-center justify-center flex font-bold list-none bg-black text-white p-1 px-4 rounded-full"><span class="ml-2">${tag}</span><img class="w-5 h-5 ml-1" src="./img/x(1).svg"/></li>`;
-						} else
-							return `<li onclick="deleteTagsSelected(${index})" style="white-space: nowrap"  class="h-9 hover:opacity-40 mx-1 items-center justify-center flex font-bold list-none bg-gray-100 text-gray-400 p-1 px-4 rounded-full"><span class="ml-2">${tag}</span><img class="w-5 h-5 ml-1" style="opacity: 0.5" src="./img/x.svg"/></li>`;
+				document.getElementById("tagsSelectedSearch").innerHTML =
+					tagsSelected.map((tag, index) => {
+						return `<li onclick="deleteTagsSelected(${index})" style="white-space: nowrap"  class="h-9 hover:opacity-40 mr-2 items-center justify-center flex font-bold list-none bg-black text-white p-1 px-4 rounded-full"><span class="ml-2">${tag}</span><img class="w-5 h-5 ml-1" src="./img/x(1).svg"/></li>`;
+					});
 
-						//	return `<li onclick="deleteTagsSelected(${index})" style="white-space: nowrap"  class="h-9 hover:opacity-40 mx-1 items-center justify-center flex font-bold list-none bg-black text-white p-1 px-4 rounded-full"><span class="ml-2">${tag}</span><img class="w-4 h-4 ml-1" src="./img/close.svg"/></li>`;
-					}
-				);
-
-				const scrollableElement = document.getElementById("tagsSelected");
-				// scrollToHorizontalEnd(scrollableElement);
+				const scrollableElement = document.getElementById("tagsSelectedSearch");
+				scrollToHorizontalEnd(scrollableElement);
 				document.getElementById("searchTagsInput").value = "";
 			}
 
@@ -209,7 +240,7 @@
 				});
 			}
 
-			async function searchTags(el) {
+			async function searchTagsInput(el) {
 				const textoConGuiones = el.replaceAll(/ /g, "_");
 				$("#searchTagsInput").val(textoConGuiones);
 
@@ -227,21 +258,35 @@
 			}
 
 			function scrollToTop(element) {
-				element.scrollIntoView({ behavior: "smooth", block: "start" });
-			}
-
-			function printTagsSelected() {
-				let tagsHTML = "";
-
-				tagsSelected.forEach((tag, index) => {
-					if (index == 0) {
-						tagsHTML += `<li onclick="deleteTagsSelected(${index})" style="white-space: nowrap"  class="h-9 hover:opacity-40 mx-1 items-center justify-center flex font-bold list-none bg-black text-white p-1 px-4 rounded-full"><span class="ml-2">${tag}</span><img class="w-5 h-5 ml-1" src="./img/x(1).svg"/></li>`;
-					} else
-						tagsHTML += `<li onclick="deleteTagsSelected(${index})" style="white-space: nowrap"  class="h-9 hover:opacity-40 mx-1 items-center justify-center flex font-bold list-none bg-gray-100 text-gray-400 p-1 px-4 rounded-full"><span class="ml-2">${tag}</span><img class="w-5 h-5 ml-1" style="opacity: 0.5" src="./img/x.svg"/></li>`;
+				window.scrollTo({
+					top: 0,
+					behavior: "smooth",
 				});
-				document.getElementById("tagsSelected").innerHTML = tagsHTML;
+				//element.scrollIntoView({ behavior: "smooth", block: "start" });
 			}
-			function printimages() {
+
+			async function printRelatedSelected() {
+				let tagsHTML = "";
+				console.log(tagsSelected);
+				let reqOptions = {
+					url: `${BACKEND_URL}/rule/tags/${tagsSelected[0]}`,
+					method: "GET",
+				};
+
+				let response = await axios.request(reqOptions);
+				if (!response.data.null) {
+					response.data.forEach((tag, index) => {
+						tagsHTML += `<li onclick="deleteTagsSelected(${index})" style="white-space: nowrap"  class="h-9 hover:opacity-40 mx-1 items-center justify-center flex font-bold list-none bg-gray-100 text-gray-400 p-1 px-4 rounded-full"><span class="ml-2">${tag.name}</span></li>`;
+					});
+					document.getElementById("tagsSelected").innerHTML = tagsHTML;
+				} else {
+					console.log("no se ha encontrado nada");
+				}
+			}
+			async function printimages() {
+				let smallImagesLocalStorage = await window.localStorage.getItem(
+					"smallImages"
+				);
 				$("#galeryCol1").html("");
 				$("#galeryCol2").html("");
 				$("#bigImagesGalery").html("");
@@ -254,7 +299,7 @@
 					pageID + 1
 				}</span>`;
 
-				if (smallImages) {
+				if (smallImagesLocalStorage == "true") {
 					for (let i = 0; i < iamgeGalery.length; i++) {
 						if (i % 2 == 0) {
 							imageCol1.push(iamgeGalery[i]);
@@ -288,13 +333,17 @@
 					}
 					document.getElementById("bigImagesGalery").innerHTML = bigImagesHTML;
 				}
+
+				scrollToTop();
 			}
 
 			async function getGaleyImages() {
 				tagsSelected = await JSON.parse(
 					window.localStorage.getItem("tagsSelected")
 				);
-				printTagsSelected();
+				$("#tagsSearched").addClass("hidden");
+
+				printRelatedSelected();
 				let tagsUser = await JSON.parse(
 					window.localStorage.getItem("tagsSelected")
 				).join("%7C");
@@ -317,6 +366,7 @@
 					iamgeGalery = response.data;
 					console.log(response.data);
 					printimages();
+					showSelectedTagsOnInit();
 				} else {
 					console.log("no se ha encontrado nada");
 				}
@@ -330,9 +380,20 @@
 					JSON.stringify(tagsSelected)
 				);
 				iamgeGalery = [];
-				$("#tagsSearched").addClass("hidden");
+				$("#searchContainer").addClass("hidden");
+
 				getGaleyImages();
 			}
+
+			function openSearchInweb() {
+				$("#searchContainer").removeClass("hidden");
+			}
+			function closeSearchInWeb() {
+				$("#searchContainer").addClass("hidden");
+				$("#tagsSelectedSearch").html("");
+				showSelectedTagsOnInit();
+			}
+
 			function nextPage() {
 				iamgeGalery = [];
 				imageCol1 = [];
@@ -342,7 +403,6 @@
 				pageID++;
 
 				getGaleyImages();
-				scrollToTop(document.getElementById("galeryContainer"));
 				window.localStorage.setItem("currentPage", pageID);
 			}
 
@@ -362,10 +422,15 @@
 				}
 			}
 
-			function changeImagesSize() {
-				smallImages = !smallImages;
+			async function changeImagesSize() {
+				let smallImages = await window.localStorage.getItem("smallImages");
+				if (smallImages == "true") {
+					window.localStorage.setItem("smallImages", "false");
+				} else {
+					window.localStorage.setItem("smallImages", "true");
+				}
+
 				printimages();
-				scrollToTop(document.getElementById("galeryContainer"));
 			}
 
 			async function showImageFullSize(imageLink) {
