@@ -9,7 +9,7 @@
 		<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 	</head>
 	<body id="app">
-		<div id="scrollContent" class="-mt-5 mb-12"></div>
+		<div id="appShowImageFull" class="hidden"></div>
 		<div
 			id="searchContainer"
 			class="hidden bg-white p-5 z-5 w-screen h-screen fixed top-0 left-0 flex flex-col justify-center items-center"
@@ -71,8 +71,6 @@
 			</div>
 		</div>
 		<div id="galeryContainer">
-			<!--  -->
-
 			<div
 				style="height: 65px; margin-top: -80px"
 				class="justify-center flex-row items-center shadow-xl rounded-full top-full flex w-[calc(100%-2.5rem)] fixed bg-white mx-5"
@@ -115,9 +113,9 @@
 			</div>
 			<div
 				id="tagsSelected"
-				class="flex list-none mt-5 flex-row p-5 pt-0 pl-2 pb-0 overflow-x-scroll overflow-hidden"
+				class="flex list-none flex-row pt-3 px-2 pl-2 pb-0 overflow-x-scroll overflow-hidden"
 			></div>
-			<div class="flex flex-row p-1 width-full flex-wrap pt-5">
+			<div class="flex flex-row p-1 width-full flex-wrap pt-3">
 				<div class="w-[calc(50%-8px)] mx-1" id="galeryCol1"></div>
 				<div class="w-[calc(50%-8px)] mx-1" id="galeryCol2"></div>
 			</div>
@@ -218,7 +216,6 @@
 					});
 
 				const scrollableElement = document.getElementById("tagsSelectedSearch");
-				scrollToHorizontalEnd(scrollableElement);
 				document.getElementById("searchTagsInput").value = "";
 			}
 			function addTags(tags) {
@@ -334,7 +331,7 @@
 					document.getElementById("bigImagesGalery").innerHTML = bigImagesHTML;
 				}
 
-				scrollToTop();
+				//scrollToTop();
 			}
 
 			async function getGaleyImages() {
@@ -364,7 +361,6 @@
 
 				if (!response.data.null) {
 					iamgeGalery = response.data;
-					console.log(response.data);
 					printimages();
 					showSelectedTagsOnInit();
 				} else {
@@ -435,7 +431,63 @@
 
 			async function showImageFullSize(imageLink) {
 				window.localStorage.setItem("fullImage", imageLink);
-				window.location.href = "./showFullImage.html";
+				$("#appShowImageFull").html(`
+				<div
+				id="imageContainer"
+				class="w-screen h-screen flex justify-center items-center fixed top-0 left-0 z-10 bg-black"
+				></div>
+				<div
+					class="fixed flex justify-center items-center top-0 left-0 bg-white z-20 m-5 w-15 h-15 rounded-full"
+				>
+				<i
+					onclick="closeImageFullSize()"
+					stroke-width="1"
+					data-feather="arrow-left"
+					style="width: 35px; height: 35px; opacity: 0.4"
+					class="m-2"
+				></i>
+				</div>
+				`);
+				$("#appShowImageFull").removeClass("hidden");
+				getImageLink();
+				feather.replace();
+			}
+
+			function closeImageFullSize() {
+				$("#appShowImageFull").addClass("hidden");
+				$("#appShowImageFull").html("");
+			}
+
+			function getImageLink() {
+				let imageLink = window.localStorage.getItem("fullImage");
+				let typeFile = imageLink.split(".").pop();
+				console.log(typeFile);
+				let HTMLImageLink;
+				if (typeFile == "mp4") {
+					HTMLImageLink = `<video
+									data-src="${imageLink}"
+									poster="${imageLink}"
+									controls="controls"
+									loop="loop"
+									playsinline=""
+									preload="none"
+									class="h-screen w-screen"
+									autoplay
+									muted
+									style="aspect-ratio: 1920 / 1080"
+									src="${imageLink}"
+									></video>`;
+				} else {
+					HTMLImageLink =
+						"<img class='w-full h-full object-contain relative z-10' src='" +
+						imageLink +
+						"' /> <img class='blur absolute w-full h-full object-cover z-0' src='" +
+						imageLink +
+						"' />";
+				}
+
+				document.getElementById("imageContainer").innerHTML = HTMLImageLink;
+				console.log(imageLink);
 			}
 		</script>
 	</body>
