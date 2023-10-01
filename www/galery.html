@@ -158,7 +158,6 @@
           class="flex flex-row items-center w-100 justify-center items-center"
         >
           <div
-            onclick="showSearchPageNumber()"
             id="pageNumber"
             class="mx-1 bg-secondary-color rounded-xl text-white flex h-10 items-center px-4 justify-center"
           >
@@ -182,7 +181,7 @@
     <div
       id="changePageNumberContainer"
       style="margin-inline: 70px"
-      class="relative flex mt-5 hidden"
+      class="relative flex mt-5"
     >
       <div>
         <div
@@ -669,17 +668,19 @@
         document.getElementById("imageContainer").innerHTML = HTMLImageLink;
       }
 
-      function showSearchPageNumber() {
+      /* function showSearchPageNumber() {
         $("#changePageNumberContainer").removeClass("hidden");
         scrollBottomWindow();
-      }
+      } */
       function searchPageNumberFuntion() {
         let inputValue = parseInt($("#searchPageNumberInput").val());
         if (inputValue && inputValue > 0) {
           pageID = inputValue - 1;
           window.localStorage.setItem("currentPage", inputValue - 1);
           getGaleyImages();
-          $("#changePageNumberContainer").addClass("hidden");
+          //$("#changePageNumberContainer").addClass("hidden");
+          $("#searchPageNumberInput").val("");
+        } else {
           $("#searchPageNumberInput").val("");
         }
       }
