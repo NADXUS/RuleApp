@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RuleApp</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+
+    <style>
+      .bg-primary-color {
+        background-color: #22272c;
+        color: white;
+      }
+      .bg-secondary-color {
+        background-color: #303345;
+      }
+      .bg-tertiary-color {
+        background-color: #303345;
+      }
+      .bg-cueternary-color {
+        background-color: #505163;
+      }
+      .border-secondary-color {
+        border: solid 2px #505163;
+      }
+    </style>
+  </head>
+  <body class="flex bg-white h-screen w-screen overflow-hidden">
+    <div class="flex-1 h-full overflow-hidden">
+      <div class="flex items-end h-full w-screen bg-primary-color">
+        <div class="flex flex-col w-screen p-10">
+          <!-- <h1 class="text-4xl mb-5 font-bold">RuleApp</h1> -->
+          <div
+            id="tagsSelected"
+            class="min-h-10 flex w-full p-2 pl-0 rounded-full overflow-x-scroll mb-2"
+          >
+            <li
+              class="flex opacity-50 items-center w-auto mx-1 max-h-9 min-h-9 bg-secondary-color p-1 px-5 rounded-xl"
+            >
+              <span class="opacity-0">..........</span>
+            </li>
+            <li
+              class="flex opacity-50 items-center w-auto mx-1 max-h-9 min-h-9 bg-secondary-color p-1 px-5 rounded-xl"
+            >
+              <span class="opacity-0">..........</span>
+            </li>
+          </div>
+          <div
+            class="flex items-center border-secondary-color bg-secondary-color outline-transparent w-full mb-2 rounded-xl"
+          >
+            <i
+              stroke="white"
+              stroke-width="1"
+              data-feather="search"
+              style="width: 22px; height: 22px"
+              class="ml-2"
+            ></i>
+            <input
+              class="bg-secondary-color outline-transparent w-full p-3"
+              style="outline: none"
+              placeholder="Search tags..."
+              type="text"
+              id="searchTagsInput"
+            />
+          </div>
+
+          <div
+            id="tagsSearched"
+            class="flex w-full p-2 min-h-10 pl-0 rounded-full overflow-x-scroll mb-3"
+          >
+            <li
+              class="opacity-50 flex items-center w-auto mx-1 max-h-9 min-h-9 list-none bg-secondary-color text-black p-1 px-5 rounded-full"
+            >
+              <span class="opacity-0">..........</span>
+            </li>
+            <li
+              class="opacity-50 flex items-center w-auto mx-1 max-h-9 min-h-9 list-none bg-secondary-color text-black p-1 px-5 rounded-full"
+            >
+              <span class="opacity-0">..........</span>
+            </li>
+            <li
+              class="opacity-50 flex items-center w-auto mx-1 max-h-9 min-h-9 list-none bg-secondary-color text-black p-1 px-5 rounded-full"
+            >
+              <span class="opacity-0">..........</span>
+            </li>
+          </div>
+
+          <div
+            class="flex justify-center items-center hover:opacity-40 bg-tertiary-color text-white p-3 w-full rounded-xl"
+            id="buttomGoToGalery"
+          >
+            <span>Continue</span>
+            <i
+              stroke="white"
+              stroke-width="1"
+              data-feather="arrow-right"
+              style="width: 22px; height: 22px"
+              class="mx-2"
+            ></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script
+    type="text/javascript"
+    src="https://code.jquery.com/jquery-1.12.3.js"
+  ></script>
+
+  <script>
+    feather.replace();
+
+    $("#buttomGoToGalery").click(function (event) {
+      goToGalery();
+    });
+    $("#searchTagsInput").on("input", function () {
+      searchTags($(this).val());
+    });
+
+    const BACKEND_URL = "https://ruleappserver-10d4170b9aef.herokuapp.com";
+    const tagsSelected = [];
+    const tagsSearched = [];
+
+    //hacer scroll hasta el final de las tags
+    function scrollToHorizontalEnd(element) {
+      element.scrollLeft = element.scrollWidth - element.clientWidth;
+    }
+    //==========================================================================
+
+    function deleteTagsSelected(index) {
+      tagsSelected.splice(index, 1);
+      document.getElementById("tagsSelected").innerHTML = tagsSelected.map(
+        (tag, index) => {
+          return `<li style="white-space: nowrap"  class="h-9 hover:opacity-40 mx-1 items-center justify-center flex font-bold list-none bg-black text-white p-1 px-4 rounded-full"><span class="ml-2">${tag}</span><img class="w-4 h-4 ml-1" onclick="deleteTagsSelected(${index})" src="./img/close.svg"/></li>`;
+        }
+      );
+    }
+
+    function addTags(tags) {
+      $("#tagsSelected").html("");
+      tagsSelected.push(tags);
+
+      tagsSelected.forEach((tag, index) => {
+        $("#tagsSelected").append(
+          `<li onclick="deleteTagsSelected(${index})" style="white-space: nowrap"  class="h-9 hover:opacity-40 mx-1 items-center justify-center flex font-bold list-none bg-cueternary-color text-white p-1 px-4  rounded-xl"><span class="ml-2">${tag}</span><img class="w-4 h-4 ml-1" src="./img/close.svg"/></li>`
+        );
+      });
+
+      const scrollableElement = document.getElementById("tagsSelected");
+      scrollToHorizontalEnd(scrollableElement);
+      document.getElementById("searchTagsInput").value = "";
+    }
+
+    function showSelectedTags(tags) {
+      $("#tagsSearched").html("");
+      tags.forEach((tag) => {
+        $("#tagsSearched").append(
+          `<li onclick="addTags('${tag.name}')" style="white-space: nowrap" class="hover:opacity-40 flex items-center w-auto mx-1 max-h-9 list-none bg-secondary-color text-white p-1 px-2 rounded-xl" > ${tag.name} <i stroke="white" stroke-width="1" data-feather="arrow-right" style="width: 20px; height: 20px" class="ml-1" ></i></li>`
+        );
+      });
+      feather.replace();
+    }
+
+    async function searchTags(el) {
+      const textoConGuiones = el.replaceAll(/ /g, "_");
+      $("#searchTagsInput").val(textoConGuiones);
+
+      let reqOptions = {
+        url: `${BACKEND_URL}/rule/tags/${el}`,
+        method: "GET",
+      };
+
+      let response = await axios.request(reqOptions);
+      if (!response.data.null) {
+        showSelectedTags(response.data);
+      } else {
+        console.log("no se ha encontrado nada");
+      }
+    }
+
+    function goToGalery() {
+      window.localStorage.setItem("tagsSelected", JSON.stringify(tagsSelected));
+      window.location.href = "./galery.html";
+    }
+
+    function removeCurrentPage() {
+      window.localStorage.removeItem("currentPage");
+    }
+    removeCurrentPage();
+  </script>
+</html>
