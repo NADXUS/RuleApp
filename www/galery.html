@@ -450,8 +450,18 @@
           document.getElementById("galeryCol1").innerHTML = "";
           document.getElementById("galeryCol2").innerHTML = "";
           for (let i = 0; i < iamgeGalery.length; i++) {
-            console.log(iamgeGalery[i]);
-            bigImagesHTML += `<img onclick="showImageFullSize('${iamgeGalery[i].high_res_file.url}')" src="${iamgeGalery[i].low_res_file.url}" class="mb-5 rounded-lg w-[calc(100%-20px)] mx-3 object-cover" style="max-height: 1000px" />`;
+            if (iamgeGalery[i].media_type == "video") {
+              bigImagesHTML += `<div class="relative overflow-hidden">
+                  <div style="margin-top: -70px; margin-left: -58px" class="rounded-xl flex bg-secondary-color justify-center items-center absolute top-full left-full w-10 h-10">
+                    <i
+                      stroke-width="1"
+                      data-feather="play"
+                      style="width: 20px; height: 20px;"
+                    ></i>
+                  </div>
+                  <img onclick="showImageFullSize('${iamgeGalery[i].high_res_file.url}')" src="${iamgeGalery[i].low_res_file.url}" class="mb-5 rounded-lg w-[calc(100%-20px)] mx-3 object-cover" style="max-height: 1000px" />                  </div>`;
+            } else
+              bigImagesHTML += `<img onclick="showImageFullSize('${iamgeGalery[i].high_res_file.url}')" src="${iamgeGalery[i].low_res_file.url}" class="mb-5 rounded-lg w-[calc(100%-20px)] mx-3 object-cover" style="max-height: 1000px" />`;
           }
           document.getElementById("bigImagesGalery").innerHTML = bigImagesHTML;
           feather.replace();
