@@ -280,6 +280,8 @@
           "tagsSelected",
           JSON.stringify(tagsSelected)
         );
+        pageID = 0;
+        window.localStorage.setItem("currentPage", "0");
         getGaleyImages();
       }
       async function showSelectedTagsOnInit() {
@@ -513,6 +515,9 @@
           JSON.stringify(tagsSelected)
         );
         iamgeGalery = [];
+        pageID = 0;
+        window.localStorage.setItem("currentPage", "0");
+
         /* $("#searchContainer").addClass("hidden"); */
 
         getGaleyImages();
