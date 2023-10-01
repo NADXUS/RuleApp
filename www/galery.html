@@ -142,10 +142,7 @@
         id="bigImagesGalery"
         class="flex flex-row p-1 width-full flex-wrap pt-5 -mt-5"
       ></div>
-      <div
-        class="flex flex-row p-1 w-full mt-10 justify-center"
-        style="margin-bottom: 100px"
-      >
+      <div class="flex flex-row p-1 w-full mt-10 justify-center">
         <div
           onclick="previousPage()"
           class="h-10 mr-2 rounded-xl flex items-center justify-center bg-secondary-color"
@@ -161,6 +158,7 @@
           class="flex flex-row items-center w-100 justify-center items-center"
         >
           <div
+            onclick="showSearchPageNumber()"
             id="pageNumber"
             class="mx-1 bg-secondary-color rounded-xl text-white flex h-10 items-center px-4 justify-center"
           >
@@ -180,6 +178,49 @@
         </div>
       </div>
     </div>
+
+    <div
+      id="changePageNumberContainer"
+      style="margin-inline: 70px"
+      class="relative flex mt-5 hidden"
+    >
+      <div>
+        <div
+          class="flex items-center h-full border-secondary-color bg-secondary-color outline-transparent w-full mb-2 rounded-xl"
+        >
+          <i
+            stroke="white"
+            stroke-width="1"
+            data-feather="hash"
+            style="width: 22px; height: 22px"
+            class="ml-2"
+          ></i>
+          <input
+            style="outline: none"
+            class="w-full h-full bg-secondary-color ml-1 outline-transparent rounded-xl"
+            placeholder="Change page"
+            type="number"
+            id="searchPageNumberInput"
+          />
+        </div>
+      </div>
+      <div
+        class="flex h-full bg-secondary-color ml-2 rounded-xl items-center justify-center"
+        style="min-width: 40px; height: 40px"
+        onclick="searchPageNumberFuntion()"
+      >
+        <i
+          stroke-width="1"
+          data-feather="search"
+          style="width: 20px; height: 20px; opacity: 1"
+        ></i>
+      </div>
+    </div>
+    <div style="margin-bottom: 100px"></div>
+
+    <!-- ======================================================================= -->
+    <!-- contenedor de menu inferior en la galeria =================================== -->
+
     <div
       id="appNavigationButtom"
       style="height: 70px; margin-top: 20px; transition: 0.3s"
@@ -263,6 +304,9 @@
 
       function scrollTopWindow() {
         $("html, body").animate({ scrollTop: 0 }, "slow");
+      }
+      function scrollBottomWindow() {
+        $("html, body").animate({ scrollTop: $(document).height() }, "slow");
       }
       //==========================================================================
 
@@ -401,7 +445,6 @@
           }
 
           for (let i = 0; i < imageCol1.length; i++) {
-            console.log(imageCol1[i]);
             if (imageCol1[i].media_type == "video") {
               imageCol1HTML += `<div class="relative overflow-hidden">
                   <div style="margin-top: -65px; margin-left: -48px" class="rounded-xl flex bg-secondary-color justify-center items-center absolute top-full left-full w-10 h-10">
@@ -599,7 +642,6 @@
       function getImageLink() {
         let imageLink = window.localStorage.getItem("fullImage");
         let typeFile = imageLink.split(".").pop();
-        console.log(typeFile);
         let HTMLImageLink;
         if (typeFile == "mp4") {
           HTMLImageLink = `<video
@@ -625,7 +667,21 @@
         }
 
         document.getElementById("imageContainer").innerHTML = HTMLImageLink;
-        console.log(imageLink);
+      }
+
+      function showSearchPageNumber() {
+        $("#changePageNumberContainer").removeClass("hidden");
+        scrollBottomWindow();
+      }
+      function searchPageNumberFuntion() {
+        let inputValue = parseInt($("#searchPageNumberInput").val());
+        if (inputValue && inputValue > 0) {
+          pageID = inputValue - 1;
+          window.localStorage.setItem("currentPage", inputValue - 1);
+          getGaleyImages();
+          $("#changePageNumberContainer").addClass("hidden");
+          $("#searchPageNumberInput").val("");
+        }
       }
     </script>
   </body>
