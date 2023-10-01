@@ -29,12 +29,55 @@
   </head>
   <body id="app" class="bg-primary-color">
     <div id="appShowImageFull" class="hidden"></div>
+    <!-- ======================================================================= -->
+    <!-- Opciones de imagenes =================================== -->
+    <div>
+      <div
+        style="height: 65px"
+        class="flex-row items-center pt-2 mb-1 shadow-xl rounded-full top-full flex w-[calc(100%-2.5rem)] ml-2"
+      >
+        <div
+          class="mx-2 p-2 flex flex-row justify-center items-center rounded-lg w-10.5 h-10.5 bg-secondary-color"
+        >
+          <a href="./index.html">
+            <i
+              stroke-width="1"
+              data-feather="arrow-left"
+              style="width: 30px; height: 30px; opacity: 0.4"
+            ></i>
+          </a>
+        </div>
+
+        <div
+          class="mx-2 p-2 flex flex-row justify-center items-center rounded-lg w-10.5 h-10.5 bg-secondary-color"
+        >
+          <i
+            onclick="changeImagesSize()"
+            stroke-width="1"
+            data-feather="image"
+            style="width: 30px; height: 30px; opacity: 0.4"
+          ></i>
+        </div>
+        <div
+          class="mx-2 p-2 flex flex-row justify-center items-center rounded-lg w-10.5 h-10.5 bg-secondary-color"
+        >
+          <i
+            stroke-width="1"
+            data-feather="columns"
+            style="width: 30px; height: 30px; opacity: 0.4"
+          ></i>
+        </div>
+      </div>
+    </div>
+    <!-- ======================================================================= -->
+    <!-- ======================================================================= -->
+    <!-- ======================================================================= -->
 
     <!-- ======================================================================= -->
     <!-- contenedor de buscador en la galeria =================================== -->
     <div
       id="searchContainer"
-      class="bg-primary-color p-3 z-5 w-screen flex flex-col justify-center items-center"
+      class="bg-primary-color mb-4 p-3 pb-0 z-5 w-screen flex flex-col justify-center items-center"
     >
       <div class="flex flex-col w-screen px-3">
         <div
@@ -77,53 +120,12 @@
       </div>
       <div
         id="tagsSearched"
-        class="flex w-full px-2 pl-0 pt-0 min-h-10 rounded-xl overflow-x-scroll mb-3"
+        class="flex w-full px-2 pl-0 pt-0 min-h-10 rounded-xl overflow-x-scroll"
       ></div>
     </div>
     <!-- ======================================================================= -->
     <!-- ======================================================================= -->
-    <!-- ======================================================================= -->
     <div id="galeryContainer">
-      <div
-        style="height: 65px; margin-top: -80px"
-        class="justify-center flex-row items-center shadow-xl rounded-full top-full flex w-[calc(100%-2.5rem)] fixed bg-white mx-5"
-      >
-        <a href="./index.html">
-          <i
-            stroke-width="1"
-            data-feather="arrow-left"
-            style="width: 30px; height: 30px; opacity: 0.4"
-            class="mx-4"
-          ></i>
-        </a>
-        <i
-          stroke-width="1"
-          data-feather="home"
-          style="width: 30px; height: 30px; opacity: 1"
-          class="mx-4"
-        ></i>
-        <i
-          onclick="openSearchInweb()"
-          stroke-width="1"
-          data-feather="search"
-          style="width: 30px; height: 30px; opacity: 0.4"
-          class="mx-4"
-        ></i>
-
-        <i
-          onclick="changeImagesSize()"
-          stroke-width="1"
-          data-feather="image"
-          style="width: 30px; height: 30px; opacity: 0.4"
-          class="mx-4"
-        ></i>
-        <i
-          stroke-width="1"
-          data-feather="columns"
-          style="width: 30px; height: 30px; opacity: 0.4"
-          class="mx-4"
-        ></i>
-      </div>
       <div class="flex flex-row p-1 px-4 width-full flex-wrap">
         <div
           class="w-[calc(50%-7px)]"
@@ -142,7 +144,7 @@
       ></div>
       <div
         class="flex flex-row p-1 w-full mt-10 justify-center"
-        style="margin-bottom: 150px"
+        style="margin-bottom: 100px"
       >
         <div class="h-10 flex items-center justify-center">
           <i
@@ -174,11 +176,56 @@
         </div>
       </div>
     </div>
+    <div
+      id="appNavigationButtom"
+      style="height: 70px; margin-top: 20px; transition: 0.3s"
+      class="justify-center flex-row items-center pb-2 shadow-xl rounded-xl top-full flex w-[calc(100%)] fixed bg-secondary-color"
+    >
+      <a href="./index.html">
+        <i
+          stroke-width="1"
+          data-feather="arrow-left"
+          style="width: 30px; height: 30px; opacity: 0.4"
+          class="mx-4"
+        ></i>
+      </a>
+      <i
+        stroke-width="1"
+        data-feather="home"
+        style="width: 30px; height: 30px; opacity: 1"
+        class="mx-4"
+      ></i>
+
+      <i
+        onclick="changeImagesSize()"
+        stroke-width="1"
+        data-feather="image"
+        style="width: 30px; height: 30px; opacity: 0.4"
+        class="mx-4"
+      ></i>
+      <i
+        stroke-width="1"
+        data-feather="columns"
+        style="width: 30px; height: 30px; opacity: 0.4"
+        class="mx-4"
+      ></i>
+    </div>
     <script
       type="text/javascript"
       src="https://code.jquery.com/jquery-1.12.3.js"
     ></script>
     <script>
+      /* mostrar menu inferior al hacer scroll */
+      $(window).scroll(function (event) {
+        var scroll = $(window).scrollTop();
+        if (scroll > 100) {
+          $("#appNavigationButtom").css("margin-top", "-60px");
+        } else {
+          $("#appNavigationButtom").css("margin-top", "20px");
+        }
+      });
+      /* ======================================= */
+
       const BACKEND_URL = "https://ruleappserver-10d4170b9aef.herokuapp.com";
 
       let pageID = 0;
@@ -363,7 +410,7 @@
           document.getElementById("galeryCol1").innerHTML = "";
           document.getElementById("galeryCol2").innerHTML = "";
           for (let i = 0; i < iamgeGalery.length; i++) {
-            bigImagesHTML += `<img onclick="showImageFullSize('${iamgeGalery[i].high_res_file.url}')" src="${iamgeGalery[i].low_res_file.url}" class="mb-2 rounded-lg w-full object-cover" style="max-height: 1000px" />`;
+            bigImagesHTML += `<img onclick="showImageFullSize('${iamgeGalery[i].high_res_file.url}')" src="${iamgeGalery[i].low_res_file.url}" class="mb-5 rounded-lg w-[calc(100%-20px)] mx-3 object-cover" style="max-height: 1000px" />`;
           }
           document.getElementById("bigImagesGalery").innerHTML = bigImagesHTML;
         }
@@ -466,10 +513,10 @@
         $("#appShowImageFull").html(`
 				<div
 				id="imageContainer"
-				class="w-screen h-screen flex justify-center items-center fixed top-0 left-0 z-10 bg-black"
+				class="w-screen h-screen flex justify-center items-center fixed top-0 left-0 z-10 bg-primary-color"
 				></div>
 				<div
-					class="fixed flex justify-center items-center top-0 left-0 bg-white z-20 m-5 w-15 h-15 rounded-full"
+					class="fixed bg-secondary-color flex justify-center items-center top-0 left-0 z-20 m-5 w-15 h-15 rounded-xl"
 				>
 				<i
 					onclick="closeImageFullSize()"
