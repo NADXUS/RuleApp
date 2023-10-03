@@ -189,10 +189,10 @@
       id="changePageNumberContainer"
       class="relative flex mt-5 w-[calc(93%)] m-auto"
     >
-      <div class="mx-1 flex">
-        <div>
+      <div class="mx-1 flex w-full">
+        <div class="flex w-full">
           <div
-            class="flex items-center h-full border-secondary-color bg-secondary-color outline-transparent w-full mb-2 rounded-xl"
+            class="flex w-full items-center h-full border-secondary-color bg-secondary-color outline-transparent mb-2 rounded-xl"
           >
             <i
               stroke="white"
@@ -629,10 +629,10 @@
         $("#appShowImageFull").html(`
       <div
       id="imageContainer"
-      class="w-screen h-screen flex justify-center items-center fixed top-0 left-0 z-10 bg-primary-color"
+      class="w-screen h-screen flex justify-center items-center fixed top-0 left-0 z-30 bg-primary-color"
       ></div>
       <div
-      	class="fixed bg-secondary-color flex justify-center items-center top-0 left-0 z-20 m-5 w-15 h-15 rounded-xl"
+      	class="fixed bg-secondary-color flex justify-center items-center top-0 left-0 z-40 m-5 w-15 h-15 rounded-xl"
       >
       <i
       	onclick="closeImageFullSize()"
@@ -667,7 +667,6 @@
       					preload="none"
       					class="h-screen w-screen"
       					autoplay
-      					muted
       					style="aspect-ratio: 1920 / 1080"
       					src="${imageLink}"
       					></video>`;
